@@ -1,0 +1,8 @@
+.DS_Store
+*.tar*
+*.zip
+.env*
+node_modules
+vendor
+/dist
+/build
