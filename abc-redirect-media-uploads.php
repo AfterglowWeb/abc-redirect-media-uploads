@@ -206,9 +206,7 @@ class RedirectMediaUploads {
 	}
 
 	public static function is_enabled(): bool {
-		if(is_admin()) {
-			return false;
-		}
+		
 		if (defined('ABC_REDIRECT_MEDIA_UPLOADS_ENABLED')) {
 
             /** @var bool $enabled */
