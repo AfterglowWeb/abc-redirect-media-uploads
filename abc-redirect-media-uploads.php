@@ -206,6 +206,9 @@ class RedirectMediaUploads {
 	}
 
 	public static function is_enabled(): bool {
+		if(is_admin()) {
+			return false;
+		}
 		if (defined('ABC_REDIRECT_MEDIA_UPLOADS_ENABLED')) {
 
             /** @var bool $enabled */
@@ -330,6 +333,10 @@ class RedirectMediaUploads {
 	}
 
 	public static function replace_media_srcset_urls( array $sources ): array {
+		if ( ! self::is_enabled() ) {
+			return $sources;
+		}
+
 		foreach ( $sources as $width => $source ) {
 			if ( ! empty( $source['url'] ) ) {
 				$sources[ $width ]['url'] = self::replace_media_base_url( $source['url'] );
