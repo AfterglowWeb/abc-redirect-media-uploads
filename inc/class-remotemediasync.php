@@ -137,8 +137,8 @@ class RemoteMediaSync {
 	 */
 	public static function register_options_page(): void {
 		add_options_page(
-			esc_html__( 'Redirect Media Uploads', 'remote-media-sync' ),
-			esc_html__( 'Redirect Media Uploads', 'remote-media-sync' ),
+			esc_html__( 'Remote Media Sync', 'remote-media-sync' ),
+			esc_html__( 'Remote Media Sync', 'remote-media-sync' ),
 			'manage_options',
 			'remote-media-sync',
 			array( self::class, 'render_options_page' )
@@ -156,7 +156,7 @@ class RemoteMediaSync {
 	public static function render_options_page(): void {
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'Redirect Media Uploads', 'remote-media-sync' ); ?></h1>
+			<h1><?php esc_html_e( 'Remote Media Sync', 'remote-media-sync' ); ?></h1>
 
 			<p>
 				<?php esc_html_e( 'Redirect or rewrite public media URLs to another WordPress uploads base URL. This is useful when several environments share the same database but do not share the same uploads directory.', 'remote-media-sync' ); ?>
@@ -595,7 +595,7 @@ class RemoteMediaSync {
 			return;
 		}
 
-		error_log( '[Redirect Media Uploads] ' . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( '[Remote Media Sync] ' . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	}
 
 	/**
@@ -763,7 +763,7 @@ class RemoteMediaSync {
 		}
 
 		self::$download_attempted = true;
-		
+
 		set_transient( 'remote_media_sync_lock_' . $attachment_id, 1, 10 * MINUTE_IN_SECONDS );
 
 		$local_file = get_attached_file( $attachment_id );
