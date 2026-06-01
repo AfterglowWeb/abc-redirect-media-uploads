@@ -277,7 +277,7 @@ class RemoteMediaSync {
 
 			<p>
 				<strong>Monero:</strong><br>
-				<code>YOUR_MONERO_ADDRESS</code>
+				<code>87uTq2B99YmNX7Nn9QaEiL6TJugAfCvCHiEEZEVES1xwBQhmrkEzniY8wfegthAYJMZMr8taBqWRSYozRhsXSZbjGxV5LCC</code>
 			</p>
 		</div>
 		<?php
