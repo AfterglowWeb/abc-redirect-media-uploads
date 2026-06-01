@@ -1,12 +1,13 @@
 <?php
 /**
- * Uninstall Redirect Media Uploads.
+ * Uninstall Remote Media Sync plugin.
  *
- * @package RedirectMediaUploads
+ * @package RemoteMediaSync
  */
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
-delete_option( 'abc_redirect_media_uploads_base_url' );
-delete_option( 'abc_redirect_media_uploads_enabled' );
-delete_option( 'abc_redirect_media_uploads_debug' );
+delete_option( 'abc_remote_media_sync_base_url' );
+delete_option( 'abc_remote_media_sync_enabled' );
+delete_option( 'abc_remote_media_sync_download_while_navigating' );
+delete_option( 'abc_remote_media_sync_debug' );

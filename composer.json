@@ -1,6 +1,6 @@
 {
-  "name": "afg/botoxs-legacy",
-  "description": "Very Lazy Sync Images.",
+  "name": "abc/remote-media-sync",
+  "description": "Remote Media Sync",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "authors": [
@@ -36,16 +36,10 @@
     "wp-coding-standards/wpcs": "^3.2"
   },
   "scripts": {
-    "build": [
-      "@composer --no-plugins --no-interaction install --no-scripts --no-dev"
-    ],
-    "lint": "phpcs inc/",
-    "fix": "phpcbf --standard=Wordpress --extensions=php inc/",
-    "graph:php": "php vendor/qossmic/deptrac/deptrac.php analyse --config-file=deptrac.yaml",
-    "graph:php:dot": "php vendor/qossmic/deptrac/deptrac.php analyse --config-file=deptrac.yaml --formatter=graphviz-dot --output=.github/graphs/php-dependencies.dot"
-  },
-  "scripts-descriptions": {
-    "build": "Build project artifact."
+      "lint": "phpcs ./ --standard=WordPress --extensions=php",
+      "lint:file": "phpcs --standard=WordPress --extensions=php",
+      "fix": "phpcbf --standard=WordPress --extensions=php ./",
+      "fix:file": "phpcbf --standard=WordPress --extensions=php"
   }
   
 }
