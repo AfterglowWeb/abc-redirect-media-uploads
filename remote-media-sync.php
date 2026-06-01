@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Remote Media Sync
  * Plugin URI: https://wordpress.org/plugins/remote-media-sync/
- * Description: Rewrite media URLs to a remote WordPress uploads directory and optionally download files locally while visitors browse your site.
+ * Description: Use a remote WordPress uploads directory without copying your entire media library.
  * Version: 1.0.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
