@@ -27,6 +27,13 @@ class RemoteMediaSync {
 	 */
 	protected static $instance = null;
 
+	/**
+	 * Flag to prevent multiple download attempts during a single request.
+	 *
+	 * @var bool
+	 */
+	protected static bool $download_attempted = false;
+
 	public const OPTION_BASE_URL                  = 'abc_remote_media_sync_base_url';
 	public const OPTION_EXCLUDED_URLS             = 'abc_remote_media_sync_excluded_urls';
 	public const OPTION_ENABLED                   = 'abc_remote_media_sync_enabled';
@@ -493,6 +500,14 @@ class RemoteMediaSync {
 			return $url;
 		}
 
+		if ( $attachment_id > 0 ) {
+			$local_file = get_attached_file( $attachment_id );
+
+			if ( $local_file && file_exists( $local_file ) ) {
+				return $url;
+			}
+		}
+
 		$base_url = self::get_base_url();
 
 		if ( empty( $base_url ) ) {
@@ -727,6 +742,10 @@ class RemoteMediaSync {
 			return;
 		}
 
+		if ( get_transient( 'remote_media_sync_global_cooldown' ) ) {
+			return;
+		}
+
 		if ( is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
 			return;
 		}
@@ -739,6 +758,12 @@ class RemoteMediaSync {
 			return;
 		}
 
+		if ( self::$download_attempted ) {
+			return;
+		}
+
+		self::$download_attempted = true;
+		
 		set_transient( 'remote_media_sync_lock_' . $attachment_id, 1, 10 * MINUTE_IN_SECONDS );
 
 		$local_file = get_attached_file( $attachment_id );
@@ -789,6 +814,13 @@ class RemoteMediaSync {
 		}
 
 		$code = wp_remote_retrieve_response_code( $response );
+
+		if ( 429 === $code ) {
+			set_transient( 'remote_media_sync_global_cooldown', 1, 10 * MINUTE_IN_SECONDS );
+			self::log( 'download paused after HTTP 429: ' . $remote_url );
+			delete_transient( 'remote_media_sync_lock_' . $attachment_id );
+			return false;
+		}
 
 		if ( 200 !== $code ) {
 			self::log( 'download failed HTTP ' . $code . ': ' . $remote_url );
