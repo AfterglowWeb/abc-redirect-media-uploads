@@ -268,7 +268,7 @@ class RemoteMediaSync {
 				<?php esc_html_e( 'Remote Media Sync is free and open source.', 'remote-media-sync' ); ?>
 			</p>
 			<p>
-				<a href="https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX"
+				<a href="https://www.paypal.com/donate/?business=HDV38XURDEFEA&no_recurring=0&item_name=Remote+Media+Sync+is+free+and+open+source.%0AIf+the+plugin+saves+you+time%2C+consider+supporting+its+development.&currency_code=EUR"
 					target="_blank"
 					rel="noopener noreferrer">
 					<?php esc_html_e( 'Support development with PayPal', 'remote-media-sync' ); ?>
