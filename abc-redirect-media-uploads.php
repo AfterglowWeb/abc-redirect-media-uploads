@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Redirect Media Uploads
+ * Plugin Name: Redirect Media URLs or Sync Media on the Fly
  * Plugin URI: https://wordpress.org/plugins/redirect-media-uploads/
- * Description: Redirects or rewrites public WordPress media URLs to a remote uploads base URL. Useful for local, staging, pre-production and production environments sharing the same database without duplicating the uploads directory.
+ * Description: Redirect Media URLs or Sync Media on the Fly. Display your medias from a remote site. Useful for local, staging, pre-production and production environments sharing the same database without duplicating the uploads directory.
  * Version: 1.0.0
  * Requires at least: 6.0
  * Requires PHP: 8.0
@@ -25,7 +25,9 @@ class RedirectMediaUploads {
 	protected static $instance = null;
 
 	public const OPTION_BASE_URL = 'abc_redirect_media_uploads_base_url';
+	public const OPTION_EXCLUDED_URLS = 'abc_redirect_media_uploads_excluded_urls';
 	public const OPTION_ENABLED  = 'abc_redirect_media_uploads_enabled';
+	public const OPTION_DOWNLOAD_WHILE_NAVIGATING = 'abc_redirect_media_uploads_download_while_navigating';
 	public const OPTION_DEBUG    = 'abc_redirect_media_uploads_debug';
 
 	public static function get_instance(): self {
@@ -78,6 +80,26 @@ class RedirectMediaUploads {
 				'default'           => '',
 			)
 		);
+
+		register_setting(
+			'abc_redirect_media_uploads',
+			self::OPTION_EXCLUDED_URLS,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => array( self::class, 'sanitize_excluded_urls' ),
+				'default'           => '',
+			)
+		);
+
+		register_setting(
+			'abc_redirect_media_uploads',
+			self::OPTION_DOWNLOAD_WHILE_NAVIGATING,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => array( self::class, 'sanitize_boolean' ),
+				'default'           => false,
+			)
+		);
 	}
 
 	public static function register_options_page(): void {
@@ -119,6 +141,24 @@ class RedirectMediaUploads {
 					</tr>
 
 					<tr>
+						<th scope="row"><?php esc_html_e( 'Download while navigating', 'redirect-media-uploads' ); ?></th>
+						<td>
+							<label>
+								<input
+									type="checkbox"
+									name="<?php echo esc_attr( self::OPTION_DOWNLOAD_WHILE_NAVIGATING ); ?>"
+									value="1"
+									<?php checked( self::should_download_while_navigating(), true ); ?>
+								>
+								<?php esc_html_e( 'Progressively download remote media locally when visitors browse pages using those images.', 'redirect-media-uploads' ); ?>
+							</label>
+							<p class="description">
+								<?php esc_html_e( 'This uses normal navigation to progressively warm the local uploads folder. It may not work if the source site blocks remote downloads, hotlinking, server-to-server requests, or applies strict rate limiting.', 'redirect-media-uploads' ); ?>
+							</p>
+						</td>
+					</tr>
+
+					<tr>
 						<th scope="row">
 							<label for="<?php echo esc_attr( self::OPTION_BASE_URL ); ?>">
 								<?php esc_html_e( 'Remote uploads base URL', 'redirect-media-uploads' ); ?>
@@ -139,6 +179,27 @@ class RedirectMediaUploads {
 						</td>
 					</tr>
 
+					<tr>
+						<th scope="row">
+							<label for="<?php echo esc_attr( self::OPTION_EXCLUDED_URLS ); ?>">
+								<?php esc_html_e( 'Excluded URLs', 'redirect-media-uploads' ); ?>
+							</label>
+						</th>
+						<td>
+							<textarea
+								class="large-text code"
+								rows="8"
+								id="<?php echo esc_attr( self::OPTION_EXCLUDED_URLS ); ?>"
+								name="<?php echo esc_attr( self::OPTION_EXCLUDED_URLS ); ?>"
+								placeholder="<?php echo esc_attr( home_url( '/wp-content/uploads/2026/01/example.jpg' ) ); ?>"
+							><?php echo esc_textarea( self::get_excluded_urls_raw() ); ?></textarea>
+
+							<p class="description">
+								<?php esc_html_e( 'One absolute URL per line. URLs must belong to the current domain.', 'redirect-media-uploads' ); ?>
+							</p>
+						</td>
+					</tr>
+					
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Debug logs', 'redirect-media-uploads' ); ?></th>
 						<td>
@@ -162,7 +223,8 @@ class RedirectMediaUploads {
 			<p><?php esc_html_e( 'You can also define these constants in wp-config.php to override the saved options:', 'redirect-media-uploads' ); ?></p>
             <pre><code>define( 'ABC_REDIRECT_MEDIA_UPLOADS_ENABLED', true );</code></pre>
             <pre><code>define( 'ABC_REDIRECT_MEDIA_UPLOADS_BASE_URL', 'https://production.example.com/wp-content/uploads' );</code></pre>
-            <pre><code>define( 'ABC_REDIRECT_MEDIA_UPLOADS_DEBUG', false );</code></pre>
+            <pre><code>define( 'ABC_REDIRECT_MEDIA_UPLOADS_EXCLUDED_URLS', "https://example.com/wp-content/uploads/file.jpg\nhttps://example.com/wp-content/uploads/other.jpg" );</code></pre>
+			<pre><code>define( 'ABC_REDIRECT_MEDIA_UPLOADS_DEBUG', false );</code></pre>
         </div>
     <?php }
 
@@ -258,6 +320,12 @@ class RedirectMediaUploads {
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		self::log( 'request_uri: ' . $request_uri );
 
+		$current_url = home_url( $request_uri );
+
+		if ( self::is_excluded_url( $current_url ) ) {
+			self::log( 'excluded url: ' . $current_url );
+			return array();
+		}
 		if ( ! self::is_upload_request() ) {
 			self::log( 'not an upload request' );
 			return array();
@@ -306,8 +374,12 @@ class RedirectMediaUploads {
 		exit;
 	}
 
-	public static function replace_media_base_url( string $url ): string {
+	public static function replace_media_base_url( string $url, int $attachment_id = 0 ): string {
 		if ( ! self::is_enabled() ) {
+			return $url;
+		}
+
+		if ( self::is_excluded_url( $url ) ) {
 			return $url;
 		}
 
@@ -321,13 +393,19 @@ class RedirectMediaUploads {
 
 		if ( empty( $upload_dir['baseurl'] ) ) {
 			return $url;
-		}
+		};
 
-		return str_replace(
+		$remote_url = str_replace(
 			untrailingslashit( $upload_dir['baseurl'] ),
 			untrailingslashit( $base_url ),
 			$url
 		);
+
+		if ( $attachment_id > 0 ) {
+			self::maybe_download_attachment_while_navigating( $attachment_id, $remote_url );
+		}
+
+		return $remote_url;
 	}
 
 	public static function replace_media_srcset_urls( array $sources ): array {
@@ -376,6 +454,181 @@ class RedirectMediaUploads {
 		}
 
 		error_log( '[Redirect Media Uploads] ' . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+	}
+
+	public static function sanitize_excluded_urls( string $value ): string {
+		$lines = preg_split( '/\R/', $value );
+		$urls  = array();
+
+		if ( ! is_array( $lines ) ) {
+			return '';
+		}
+
+		$home_host = wp_parse_url( home_url(), PHP_URL_HOST );
+
+		foreach ( $lines as $line ) {
+			$url = trim( $line );
+
+			if ( empty( $url ) ) {
+				continue;
+			}
+
+			$scheme = wp_parse_url( $url, PHP_URL_SCHEME );
+			$host   = wp_parse_url( $url, PHP_URL_HOST );
+
+			if (
+				! in_array( $scheme, array( 'http', 'https' ), true )
+				|| empty( $host )
+				|| strtolower( (string) $host ) !== strtolower( (string) $home_host )
+			) {
+				continue;
+			}
+
+			$urls[] = esc_url_raw( $url );
+		}
+
+		$urls = array_values( array_unique( $urls ) );
+
+		return implode( "\n", $urls );
+	}
+
+	public static function get_excluded_urls_raw(): string {
+		if ( defined( 'ABC_REDIRECT_MEDIA_UPLOADS_EXCLUDED_URLS' ) ) {
+			return self::sanitize_excluded_urls(
+				(string) constant( 'ABC_REDIRECT_MEDIA_UPLOADS_EXCLUDED_URLS' )
+			);
+		}
+
+		return self::sanitize_excluded_urls(
+			(string) get_option( self::OPTION_EXCLUDED_URLS, '' )
+		);
+	}
+
+	public static function get_excluded_urls(): array {
+		$raw = self::get_excluded_urls_raw();
+
+		if ( empty( $raw ) ) {
+			return array();
+		}
+
+		return array_filter(
+			array_map( 'trim', preg_split( '/\R/', $raw ) ?: array() )
+		);
+	}
+
+	public static function is_excluded_url( string $url ): bool {
+		$url_parts = wp_parse_url( $url );
+
+		if ( empty( $url_parts['path'] ) ) {
+			return false;
+		}
+
+		$url_path = untrailingslashit( $url_parts['path'] );
+
+		foreach ( self::get_excluded_urls() as $excluded_url ) {
+			$excluded_parts = wp_parse_url( $excluded_url );
+
+			if ( empty( $excluded_parts['path'] ) ) {
+				continue;
+			}
+
+			$excluded_path = untrailingslashit( $excluded_parts['path'] );
+
+			if ( $url_path === $excluded_path ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static function should_download_while_navigating(): bool {
+		if ( defined( 'ABC_REDIRECT_MEDIA_UPLOADS_DOWNLOAD_WHILE_NAVIGATING' ) ) {
+			return (bool) constant( 'ABC_REDIRECT_MEDIA_UPLOADS_DOWNLOAD_WHILE_NAVIGATING' );
+		}
+
+		return (bool) get_option( self::OPTION_DOWNLOAD_WHILE_NAVIGATING, false );
+	}
+
+	protected static function maybe_download_attachment_while_navigating( int $attachment_id, string $remote_url ): void {
+		if ( ! self::should_download_while_navigating() ) {
+			return;
+		}
+
+		if ( is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
+			return;
+		}
+
+		if ( get_post_meta( $attachment_id, '_abc_redirect_media_downloaded', true ) ) {
+			return;
+		}
+
+		if ( get_transient( 'abc_redirect_media_lock_' . $attachment_id ) ) {
+			return;
+		}
+
+		set_transient( 'abc_redirect_media_lock_' . $attachment_id, 1, 10 * MINUTE_IN_SECONDS );
+
+		$local_file = get_attached_file( $attachment_id );
+
+		if ( $local_file && file_exists( $local_file ) ) {
+			update_post_meta( $attachment_id, '_abc_redirect_media_downloaded', current_time( 'mysql' ) );
+			delete_transient( 'abc_redirect_media_lock_' . $attachment_id );
+			return;
+		}
+
+		self::download_remote_file_for_attachment( $attachment_id, $remote_url );
+	}
+
+	protected static function download_remote_file_for_attachment( int $attachment_id, string $remote_url ): bool {
+		$local_file = get_attached_file( $attachment_id );
+
+		if ( empty( $local_file ) ) {
+			delete_transient( 'abc_redirect_media_lock_' . $attachment_id );
+			return false;
+		}
+
+		wp_mkdir_p( dirname( $local_file ) );
+
+		$response = wp_remote_get( $remote_url, array(
+			'timeout'     => 20,
+			'redirection' => 3,
+			'headers'     => array(
+				'User-Agent' => 'Mozilla/5.0 WordPress Media Warmup',
+				'Accept'     => 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+				'Referer'    => home_url( '/' ),
+			),
+		) );
+
+		if ( is_wp_error( $response ) ) {
+			self::log( 'download failed: ' . $response->get_error_message() );
+			delete_transient( 'abc_redirect_media_lock_' . $attachment_id );
+			return false;
+		}
+
+		$code = wp_remote_retrieve_response_code( $response );
+
+		if ( 200 !== $code ) {
+			self::log( 'download failed HTTP ' . $code . ': ' . $remote_url );
+			delete_transient( 'abc_redirect_media_lock_' . $attachment_id );
+			return false;
+		}
+
+		$body = wp_remote_retrieve_body( $response );
+
+		if ( empty( $body ) ) {
+			delete_transient( 'abc_redirect_media_lock_' . $attachment_id );
+			return false;
+		}
+
+		file_put_contents( $local_file, $body );
+
+		update_post_meta( $attachment_id, '_abc_redirect_media_downloaded', current_time( 'mysql' ) );
+		update_post_meta( $attachment_id, '_abc_redirect_media_source_url', esc_url_raw( $remote_url ) );
+
+		delete_transient( 'abc_redirect_media_lock_' . $attachment_id );
+
+		return true;
 	}
 }
 
