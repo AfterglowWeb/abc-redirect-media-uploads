@@ -264,20 +264,21 @@ class RemoteMediaSync {
 		</div>
 		<div class="wrap" style="margin-top: 2em;">
 			<p class="description">
-				<?php esc_html_e( 'This plugin is licensed under the GPLv2 (or later) license.', 'remote-media-sync' ); ?><br>
-				<?php esc_html_e( 'Remote Media Sync is free and open source.', 'remote-media-sync' ); ?>
-			</p>
-			<p>
+				<?php esc_html_e( 'Remote Media Sync is open source, ', 'remote-media-sync' ); ?>
+				<a href="https://github.com/AfterglowWeb/abc-redirect-media-uploads"
+				target="_blank"
+				style="text-decoration: underline;"
+				rel="noopener noreferrer"><?php esc_html_e( 'see plugin Github', 'remote-media-sync' ); ?></a><br>
+				<?php esc_html_e( 'You can thank me through PayPal or Monero:', 'remote-media-sync' ); ?>
+				<br>
 				<a href="https://www.paypal.com/donate/?business=HDV38XURDEFEA&no_recurring=0&item_name=Remote+Media+Sync+is+free+and+open+source.%0AIf+the+plugin+saves+you+time%2C+consider+supporting+its+development.&currency_code=EUR"
 					target="_blank"
+					style="text-decoration: underline;"
 					rel="noopener noreferrer">
-					<?php esc_html_e( 'Support development with PayPal', 'remote-media-sync' ); ?>
-				</a>
-			</p>
-
-			<p>
-				<strong>Monero:</strong><br>
-				<code>87uTq2B99YmNX7Nn9QaEiL6TJugAfCvCHiEEZEVES1xwBQhmrkEzniY8wfegthAYJMZMr8taBqWRSYozRhsXSZbjGxV5LCC</code>
+					<?php esc_html_e( 'PayPal Donate Link', 'remote-media-sync' ); ?>
+				</a><br>
+				<span><?php esc_html_e( 'Monero Address', 'remote-media-sync' ); ?></span><br>
+				<code style="color: var(--wp-admin-theme-color);">87uTq2B99YmNX7Nn9QaEiL6TJugAfCvCHiEEZEVES1xwBQhmrkEzniY8wfegthAYJMZMr8taBqWRSYozRhsXSZbjGxV5LCC</code>
 			</p>
 		</div>
 		<?php
