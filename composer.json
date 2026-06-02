@@ -1,6 +1,6 @@
 {
   "name": "abc/remote-media-sync",
-  "description": "Remote Media Sync",
+  "description": "ABC Remote Media Sync",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "authors": [

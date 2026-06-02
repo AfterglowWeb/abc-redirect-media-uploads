@@ -1,8 +1,8 @@
-=== Remote Media Sync ===
+=== ABC Remote Media Sync ===
 Contributors: bromate
 Tags: media, uploads, attachments, staging, development, migration, sync
 Requires at least: 6.0
-Tested up to: 6.6
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 1.0.0
 License: GPLv2 or later
@@ -14,7 +14,7 @@ Use a remote WordPress uploads directory without copying your entire media libra
 
 == Description ==
 
-Remote Media Sync helps WordPress installations share the same database across multiple environments without requiring a full copy of the uploads directory.
+ABC Remote Media Sync helps WordPress installations share the same database across multiple environments without requiring a full copy of the uploads directory.
 
 Instead of synchronizing gigabytes of media files between environments, the plugin allows WordPress to use a remote uploads directory while keeping the local media library structure intact.
 
@@ -40,7 +40,7 @@ A local site generates:
 
 `https://local.example.test/wp-content/uploads/2026/05/image.jpg`
 
-Remote Media Sync rewrites it to:
+ABC Remote Media Sync rewrites it to:
 
 `https://production.example.com/wp-content/uploads/2026/05/image.jpg`
 

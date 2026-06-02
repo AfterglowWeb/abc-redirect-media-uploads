@@ -5,6 +5,7 @@
  * Description: Use a remote WordPress uploads directory without copying your entire media library.
  * Version: 1.0.0
  * Requires at least: 6.0
+ * Tested up to: 7.0 
  * Requires PHP: 7.4
  * Author: bromate
  * Author URI: https://www.moriskelly.com
