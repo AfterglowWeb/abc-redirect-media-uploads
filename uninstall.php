@@ -1,6 +1,6 @@
 <?php
 /**
- * Uninstall Remote Media Sync plugin.
+ * Uninstall ABC Remote Media Sync plugin.
  *
  * @package RemoteMediaSync
  */

@@ -1,4 +1,4 @@
-# Remote Media Sync
+# ABC Remote Media Sync
 
 A remote media bridge for WordPress development, staging and migration workflows.
 
@@ -6,7 +6,7 @@ Use a remote WordPress uploads directory without copying your entire media libra
 
 ## Overview
 
-Remote Media Sync helps WordPress installations share the same database across multiple environments without requiring a full copy of the uploads directory.
+ABC Remote Media Sync helps WordPress installations share the same database across multiple environments without requiring a full copy of the uploads directory.
 
 Instead of synchronizing gigabytes of media files between environments, the plugin allows WordPress to use a remote uploads directory while keeping the local media library structure intact.
 
@@ -34,7 +34,7 @@ A local site generates:
 https://local.example.test/wp-content/uploads/2026/05/image.jpg
 ```
 
-Remote Media Sync rewrites it to:
+ABC Remote Media Sync rewrites it to:
 
 ```text
 https://production.example.com/wp-content/uploads/2026/05/image.jpg
