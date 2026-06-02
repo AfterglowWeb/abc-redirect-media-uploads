@@ -81,13 +81,13 @@ Example:
 
 You may also configure the plugin using constants in wp-config.php:
 
-`define( 'REMOTE_MEDIA_SYNC_ENABLED', true );`
+`define( 'ABC_REMOTE_MEDIA_SYNC_ENABLED', true );`
 
-`define( 'REMOTE_MEDIA_SYNC_BASE_URL', 'https://www.example.com/wp-content/uploads' );`
+`define( 'ABC_REMOTE_MEDIA_SYNC_BASE_URL', 'https://www.example.com/wp-content/uploads' );`
 
-`define( 'REMOTE_MEDIA_SYNC_DOWNLOAD_WHILE_NAVIGATING', true );`
+`define( 'ABC_REMOTE_MEDIA_SYNC_DOWNLOAD_WHILE_NAVIGATING', true );`
 
-`define( 'REMOTE_MEDIA_SYNC_DEBUG', false );`
+`define( 'ABC_REMOTE_MEDIA_SYNC_DEBUG', false );`
 
 Constants take precedence over saved settings.
 

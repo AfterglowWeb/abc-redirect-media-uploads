@@ -37,7 +37,7 @@
       "lint:file": "phpcs --standard=WordPress --extensions=php",
       "fix": "phpcbf --standard=WordPress --extensions=php ./",
       "fix:file": "phpcbf --standard=WordPress --extensions=php",
-      "zip": "rm -f remote-media-sync.zip && zip -r remote-media-sync.zip . -x '*.git*' -x 'vendor/*' -x 'composer.json' -x 'composer.lock' -x '*.md'"
+      "zip": "rm -f abc-remote-media-sync.zip && zip -r abc-remote-media-sync.zip . -x '*.git*' -x 'vendor/*' -x 'composer.json' -x 'composer.lock' -x '*.md'"
   }
   
 }
