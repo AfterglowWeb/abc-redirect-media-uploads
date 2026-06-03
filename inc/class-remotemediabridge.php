@@ -1,24 +1,24 @@
 <?php
 /**
- * ABC Remote Media Sync.
+ * Bromate Remote Media Bridge.
  *
- * @package RemoteMediaSync
+ * @package BromateRemoteMediaBridge
  */
 
-namespace Abc\Plugin\RemoteMediaSync;
+namespace Bromate\Plugin\RemoteMediaBridge;
 
 defined( 'ABSPATH' ) || exit;
 
 use Exception;
 
 /**
- * Main plugin class for ABC Remote Media Sync.
+ * Main plugin class for Bromate Remote Media Bridge.
  *
  * Handles admin settings, media URL rewriting, upload request redirects,
  * excluded URLs, debug logging, and optional lazy local media downloads
  * while visitors browse the site.
  */
-class RemoteMediaSync {
+class RemoteMediaBridge {
 
 	/**
 	 * Singleton instance.
@@ -34,11 +34,11 @@ class RemoteMediaSync {
 	 */
 	protected static bool $download_attempted = false;
 
-	public const OPTION_BASE_URL                  = 'abc_remote_media_sync_base_url';
-	public const OPTION_EXCLUDED_URLS             = 'abc_remote_media_sync_excluded_urls';
-	public const OPTION_ENABLED                   = 'abc_remote_media_sync_enabled';
-	public const OPTION_DOWNLOAD_WHILE_NAVIGATING = 'abc_remote_media_sync_download_while_navigating';
-	public const OPTION_DEBUG                     = 'abc_remote_media_sync_debug';
+	public const OPTION_BASE_URL                  = 'bromate_remote_media_bridge_base_url';
+	public const OPTION_EXCLUDED_URLS             = 'bromate_remote_media_bridge_excluded_urls';
+	public const OPTION_ENABLED                   = 'bromate_remote_media_bridge_enabled';
+	public const OPTION_DOWNLOAD_WHILE_NAVIGATING = 'bromate_remote_media_bridge_download_while_navigating';
+	public const OPTION_DEBUG                     = 'bromate_remote_media_bridge_debug';
 
 	/**
 	 * Get the singleton plugin instance.
@@ -59,7 +59,7 @@ class RemoteMediaSync {
 	private function __construct() {
 		add_action( 'admin_init', array( self::class, 'register_settings' ) );
 		add_action( 'admin_menu', array( self::class, 'register_options_page' ) );
-		add_filter( 'plugin_action_links_' . ABC_REMOTE_MEDIA_SYNC_PLUGIN_BASENAME, array( self::class, 'add_plugin_action_links' ) );
+		add_filter( 'plugin_action_links_' . BROMATE_REMOTE_MEDIA_BRIDGE_PLUGIN_BASENAME, array( self::class, 'add_plugin_action_links' ) );
 
 		add_filter( 'redirect_canonical', array( self::class, 'disable_canonical_for_uploads' ), 10, 1 );
 		add_action( 'template_redirect', array( self::class, 'redirect_medias' ), 1 );
@@ -78,7 +78,7 @@ class RemoteMediaSync {
 	 */
 	public static function register_settings(): void {
 		register_setting(
-			'abc_remote_media_sync_uploads',
+			'bromate_remote_media_bridge_uploads',
 			self::OPTION_ENABLED,
 			array(
 				'type'              => 'boolean',
@@ -88,7 +88,7 @@ class RemoteMediaSync {
 		);
 
 		register_setting(
-			'abc_remote_media_sync_uploads',
+			'bromate_remote_media_bridge_uploads',
 			self::OPTION_DEBUG,
 			array(
 				'type'              => 'boolean',
@@ -98,7 +98,7 @@ class RemoteMediaSync {
 		);
 
 		register_setting(
-			'abc_remote_media_sync_uploads',
+			'bromate_remote_media_bridge_uploads',
 			self::OPTION_BASE_URL,
 			array(
 				'type'              => 'string',
@@ -108,7 +108,7 @@ class RemoteMediaSync {
 		);
 
 		register_setting(
-			'abc_remote_media_sync_uploads',
+			'bromate_remote_media_bridge_uploads',
 			self::OPTION_EXCLUDED_URLS,
 			array(
 				'type'              => 'string',
@@ -118,7 +118,7 @@ class RemoteMediaSync {
 		);
 
 		register_setting(
-			'abc_remote_media_sync_uploads',
+			'bromate_remote_media_bridge_uploads',
 			self::OPTION_DOWNLOAD_WHILE_NAVIGATING,
 			array(
 				'type'              => 'boolean',
@@ -137,10 +137,10 @@ class RemoteMediaSync {
 	 */
 	public static function register_options_page(): void {
 		add_options_page(
-			esc_html__( 'ABC Remote Media Sync', 'abc-remote-media-sync' ),
-			esc_html__( 'ABC Remote Media Sync', 'abc-remote-media-sync' ),
+			esc_html__( 'Bromate Remote Media Bridge', 'bromate-remote-media-bridge' ),
+			esc_html__( 'Bromate Remote Media Bridge', 'bromate-remote-media-bridge' ),
 			'manage_options',
-			'abc-remote-media-sync',
+			'bromate-remote-media-bridge',
 			array( self::class, 'render_options_page' )
 		);
 	}
@@ -156,18 +156,18 @@ class RemoteMediaSync {
 	public static function render_options_page(): void {
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'ABC Remote Media Sync', 'abc-remote-media-sync' ); ?></h1>
+			<h1><?php esc_html_e( 'Bromate Remote Media Bridge', 'bromate-remote-media-bridge' ); ?></h1>
 
 			<p>
-				<?php esc_html_e( 'Redirect or rewrite public media URLs to another WordPress uploads base URL. This is useful when several environments share the same database but do not share the same uploads directory.', 'abc-remote-media-sync' ); ?>
+				<?php esc_html_e( 'Redirect or rewrite public media URLs to another WordPress uploads base URL. This is useful when several environments share the same database but do not share the same uploads directory.', 'bromate-remote-media-bridge' ); ?>
 			</p>
 
 			<form method="post" action="options.php">
-				<?php settings_fields( 'abc_remote_media_sync_uploads' ); ?>
+				<?php settings_fields( 'bromate_remote_media_bridge_uploads' ); ?>
 
 				<table class="form-table" role="presentation">
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Enable media URL redirect', 'abc-remote-media-sync' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'Enable media URL redirect', 'bromate-remote-media-bridge' ); ?></th>
 						<td>
 							<label>
 								<input
@@ -176,13 +176,13 @@ class RemoteMediaSync {
 									value="1"
 									<?php checked( self::is_enabled(), true ); ?>
 								>
-								<?php esc_html_e( 'Enable rewriting and redirection of media URLs.', 'abc-remote-media-sync' ); ?>
+								<?php esc_html_e( 'Enable rewriting and redirection of media URLs.', 'bromate-remote-media-bridge' ); ?>
 							</label>
 						</td>
 					</tr>
 
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Download while navigating', 'abc-remote-media-sync' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'Download while navigating', 'bromate-remote-media-bridge' ); ?></th>
 						<td>
 							<label>
 								<input
@@ -191,10 +191,10 @@ class RemoteMediaSync {
 									value="1"
 									<?php checked( self::should_download_while_navigating(), true ); ?>
 								>
-								<?php esc_html_e( 'Progressively download remote media locally when visitors browse pages using those images.', 'abc-remote-media-sync' ); ?>
+								<?php esc_html_e( 'Progressively download remote media locally when visitors browse pages using those images.', 'bromate-remote-media-bridge' ); ?>
 							</label>
 							<p class="description">
-								<?php esc_html_e( 'This uses normal navigation to progressively warm the local uploads folder. It may not work if the source site blocks remote downloads, hotlinking, server-to-server requests, or applies strict rate limiting.', 'abc-remote-media-sync' ); ?>
+								<?php esc_html_e( 'This uses normal navigation to progressively warm the local uploads folder. It may not work if the source site blocks remote downloads, hotlinking, server-to-server requests, or applies strict rate limiting.', 'bromate-remote-media-bridge' ); ?>
 							</p>
 						</td>
 					</tr>
@@ -202,7 +202,7 @@ class RemoteMediaSync {
 					<tr>
 						<th scope="row">
 							<label for="<?php echo esc_attr( self::OPTION_BASE_URL ); ?>">
-								<?php esc_html_e( 'Remote uploads base URL', 'abc-remote-media-sync' ); ?>
+								<?php esc_html_e( 'Remote uploads base URL', 'bromate-remote-media-bridge' ); ?>
 							</label>
 						</th>
 						<td>
@@ -215,7 +215,7 @@ class RemoteMediaSync {
 								placeholder="https://www.example.com/wp-content/uploads"
 							>
 							<p class="description">
-								<?php esc_html_e( 'Example: https://production.example.com/wp-content/uploads', 'abc-remote-media-sync' ); ?>
+								<?php esc_html_e( 'Example: https://production.example.com/wp-content/uploads', 'bromate-remote-media-bridge' ); ?>
 							</p>
 						</td>
 					</tr>
@@ -223,7 +223,7 @@ class RemoteMediaSync {
 					<tr>
 						<th scope="row">
 							<label for="<?php echo esc_attr( self::OPTION_EXCLUDED_URLS ); ?>">
-								<?php esc_html_e( 'Excluded URLs', 'abc-remote-media-sync' ); ?>
+								<?php esc_html_e( 'Excluded URLs', 'bromate-remote-media-bridge' ); ?>
 							</label>
 						</th>
 						<td>
@@ -236,13 +236,13 @@ class RemoteMediaSync {
 							><?php echo esc_textarea( self::get_excluded_urls_raw() ); ?></textarea>
 
 							<p class="description">
-								<?php esc_html_e( 'One absolute URL per line. URLs must belong to the current domain.', 'abc-remote-media-sync' ); ?>
+								<?php esc_html_e( 'One absolute URL per line. URLs must belong to the current domain.', 'bromate-remote-media-bridge' ); ?>
 							</p>
 						</td>
 					</tr>
 					
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Debug logs', 'abc-remote-media-sync' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'Debug logs', 'bromate-remote-media-bridge' ); ?></th>
 						<td>
 							<label>
 								<input
@@ -251,7 +251,7 @@ class RemoteMediaSync {
 									value="1"
 									<?php checked( self::is_debug_enabled(), true ); ?>
 								>
-								<?php esc_html_e( 'Write plugin debug messages to the PHP error log.', 'abc-remote-media-sync' ); ?>
+								<?php esc_html_e( 'Write plugin debug messages to the PHP error log.', 'bromate-remote-media-bridge' ); ?>
 							</label>
 						</td>
 					</tr>
@@ -261,30 +261,30 @@ class RemoteMediaSync {
 			</form>
 
 			<div class="wrap" style="margin-top: 2em; padding: 1em; background: #fff; border: 1px solid #ddd;">
-				<h2><?php esc_html_e( 'Environment constants', 'abc-remote-media-sync' ); ?></h2>
-				<p><?php esc_html_e( 'You can also define these constants in wp-config.php to override the saved options:', 'abc-remote-media-sync' ); ?></p>
-				<code style="display:block;word-break: break-all;margin: 10px 0;">define( 'ABC_REMOTE_MEDIA_SYNC_ENABLED', true );</code>
-				<code style="display:block;word-break: break-all;margin: 10px 0;">define( 'ABC_REMOTE_MEDIA_SYNC_BASE_URL', 'https://production.example.com/wp-content/uploads' );</code>
-				<code style="display:block;word-break: break-all;margin: 10px 0;">define( 'ABC_REMOTE_MEDIA_SYNC_EXCLUDED_URLS', "https://example.com/wp-content/uploads/file.jpg\nhttps://example.com/wp-content/uploads/other.jpg" );</code>
-				<code style="display:block;word-break: break-all;margin: 10px 0;">define( 'ABC_REMOTE_MEDIA_SYNC_DEBUG', false );</code>
+				<h2><?php esc_html_e( 'Environment constants', 'bromate-remote-media-bridge' ); ?></h2>
+				<p><?php esc_html_e( 'You can also define these constants in wp-config.php to override the saved options:', 'bromate-remote-media-bridge' ); ?></p>
+				<code style="display:block;word-break: break-all;margin: 10px 0;">define( 'BROMATE_REMOTE_MEDIA_BRIDGE_ENABLED', true );</code>
+				<code style="display:block;word-break: break-all;margin: 10px 0;">define( 'BROMATE_REMOTE_MEDIA_BRIDGE_BASE_URL', 'https://production.example.com/wp-content/uploads' );</code>
+				<code style="display:block;word-break: break-all;margin: 10px 0;">define( 'BROMATE_REMOTE_MEDIA_BRIDGE_EXCLUDED_URLS', "https://example.com/wp-content/uploads/file.jpg\nhttps://example.com/wp-content/uploads/other.jpg" );</code>
+				<code style="display:block;word-break: break-all;margin: 10px 0;">define( 'BROMATE_REMOTE_MEDIA_BRIDGE_DEBUG', false );</code>
 			</div>
 		</div>
 		<div class="wrap" style="margin-top: 2em;">
 			<p class="description">
-				<?php esc_html_e( 'ABC Remote Media Sync is open source, ', 'abc-remote-media-sync' ); ?>
+				<?php esc_html_e( 'Bromate Remote Media Bridge is open source, ', 'bromate-remote-media-bridge' ); ?>
 				<a href="https://github.com/AfterglowWeb/abc-redirect-media-uploads"
 				target="_blank"
 				style="text-decoration: underline;"
-				rel="noopener noreferrer"><?php esc_html_e( 'see plugin Github', 'abc-remote-media-sync' ); ?></a><br>
-				<?php esc_html_e( 'You can thank me through PayPal or Monero:', 'abc-remote-media-sync' ); ?>
+				rel="noopener noreferrer"><?php esc_html_e( 'see plugin Github', 'bromate-remote-media-bridge' ); ?></a><br>
+				<?php esc_html_e( 'You can thank me through PayPal or Monero:', 'bromate-remote-media-bridge' ); ?>
 				<br>
 				<a href="https://www.paypal.com/donate/?business=HDV38XURDEFEA&no_recurring=0&item_name=Remote+Media+Sync+is+free+and+open+source.%0AIf+the+plugin+saves+you+time%2C+consider+supporting+its+development.&currency_code=EUR"
 					target="_blank"
 					style="text-decoration: underline;"
 					rel="noopener noreferrer">
-					<?php esc_html_e( 'PayPal Donate Link', 'abc-remote-media-sync' ); ?>
+					<?php esc_html_e( 'PayPal Donate Link', 'bromate-remote-media-bridge' ); ?>
 				</a><br>
-				<span><?php esc_html_e( 'Monero Address', 'abc-remote-media-sync' ); ?></span><br>
+				<span><?php esc_html_e( 'Monero Address', 'bromate-remote-media-bridge' ); ?></span><br>
 				<code style="color: var(--wp-admin-theme-color);">87uTq2B99YmNX7Nn9QaEiL6TJugAfCvCHiEEZEVES1xwBQhmrkEzniY8wfegthAYJMZMr8taBqWRSYozRhsXSZbjGxV5LCC</code>
 			</p>
 		</div>
@@ -300,8 +300,8 @@ class RemoteMediaSync {
 	public static function add_plugin_action_links( array $links ): array {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
-			esc_url( admin_url( 'options-general.php?page=remote-media-sync' ) ),
-			esc_html__( 'Settings', 'abc-remote-media-sync' )
+			esc_url( admin_url( 'options-general.php?page=remote-media-bridge' ) ),
+			esc_html__( 'Settings', 'bromate-remote-media-bridge' )
 		);
 
 		array_unshift( $links, $settings_link );
@@ -315,7 +315,7 @@ class RemoteMediaSync {
 	 * @param mixed $value Value to sanitize.
 	 * @return bool Sanitized boolean.
 	 */
-	public static function sanitize_boolean( mixed $value ): bool {
+	public static function sanitize_boolean( $value ): bool {
 		return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
 	}
 
@@ -343,9 +343,9 @@ class RemoteMediaSync {
 	 * @return string Remote uploads base URL.
 	 */
 	public static function get_base_url(): string {
-		if ( defined( 'ABC_REMOTE_MEDIA_SYNC_BASE_URL' ) ) {
+		if ( defined( 'BROMATE_REMOTE_MEDIA_BRIDGE_BASE_URL' ) ) {
 
-			$base_url = constant( 'ABC_REMOTE_MEDIA_SYNC_BASE_URL' );
+			$base_url = constant( 'BROMATE_REMOTE_MEDIA_BRIDGE_BASE_URL' );
 
 			return untrailingslashit( esc_url_raw( $base_url ) );
 		}
@@ -362,9 +362,9 @@ class RemoteMediaSync {
 	 */
 	public static function is_enabled(): bool {
 
-		if ( defined( 'ABC_REMOTE_MEDIA_SYNC_ENABLED' ) ) {
+		if ( defined( 'BROMATE_REMOTE_MEDIA_BRIDGE_ENABLED' ) ) {
 
-			$enabled = constant( 'ABC_REMOTE_MEDIA_SYNC_ENABLED' );
+			$enabled = constant( 'BROMATE_REMOTE_MEDIA_BRIDGE_ENABLED' );
 
 			return (bool) $enabled;
 		}
@@ -380,9 +380,9 @@ class RemoteMediaSync {
 	 * @return bool True if debug logging is enabled.
 	 */
 	public static function is_debug_enabled(): bool {
-		if ( defined( 'ABC_REMOTE_MEDIA_SYNC_DEBUG' ) ) {
+		if ( defined( 'BROMATE_REMOTE_MEDIA_BRIDGE_DEBUG' ) ) {
 
-			$debug_enabled = constant( 'ABC_REMOTE_MEDIA_SYNC_DEBUG' );
+			$debug_enabled = constant( 'BROMATE_REMOTE_MEDIA_BRIDGE_DEBUG' );
 
 			return (bool) $debug_enabled;
 		}
@@ -396,7 +396,7 @@ class RemoteMediaSync {
 	 * @param mixed $redirect_url Canonical redirect URL.
 	 * @return mixed False for upload requests, original value otherwise.
 	 */
-	public static function disable_canonical_for_uploads( mixed $redirect_url ): mixed {
+	public static function disable_canonical_for_uploads( $redirect_url ) {
 		if ( self::is_upload_request() ) {
 			return false;
 		}
@@ -595,7 +595,7 @@ class RemoteMediaSync {
 			return;
 		}
 
-		error_log( '[ABC Remote Media Sync] ' . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( '[Bromate Remote Media Bridge] ' . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	}
 
 	/**
@@ -650,9 +650,9 @@ class RemoteMediaSync {
 	 * @return string Raw excluded URLs list.
 	 */
 	public static function get_excluded_urls_raw(): string {
-		if ( defined( 'ABC_REMOTE_MEDIA_SYNC_EXCLUDED_URLS' ) ) {
+		if ( defined( 'BROMATE_REMOTE_MEDIA_BRIDGE_EXCLUDED_URLS' ) ) {
 			return self::sanitize_excluded_urls(
-				(string) constant( 'ABC_REMOTE_MEDIA_SYNC_EXCLUDED_URLS' )
+				(string) constant( 'BROMATE_REMOTE_MEDIA_BRIDGE_EXCLUDED_URLS' )
 			);
 		}
 
@@ -720,8 +720,8 @@ class RemoteMediaSync {
 	 * @return bool True if enabled.
 	 */
 	public static function should_download_while_navigating(): bool {
-		if ( defined( 'ABC_REMOTE_MEDIA_SYNC_DOWNLOAD_WHILE_NAVIGATING' ) ) {
-			return (bool) constant( 'ABC_REMOTE_MEDIA_SYNC_DOWNLOAD_WHILE_NAVIGATING' );
+		if ( defined( 'BROMATE_REMOTE_MEDIA_BRIDGE_DOWNLOAD_WHILE_NAVIGATING' ) ) {
+			return (bool) constant( 'BROMATE_REMOTE_MEDIA_BRIDGE_DOWNLOAD_WHILE_NAVIGATING' );
 		}
 
 		return (bool) get_option( self::OPTION_DOWNLOAD_WHILE_NAVIGATING, false );
@@ -742,7 +742,7 @@ class RemoteMediaSync {
 			return;
 		}
 
-		if ( get_transient( 'abc_remote_media_sync_global_cooldown' ) ) {
+		if ( get_transient( 'bromate_remote_media_bridge_global_cooldown' ) ) {
 			return;
 		}
 
@@ -750,11 +750,11 @@ class RemoteMediaSync {
 			return;
 		}
 
-		if ( get_post_meta( $attachment_id, '_abc_remote_media_sync_downloaded', true ) ) {
+		if ( get_post_meta( $attachment_id, '_bromate_remote_media_bridge_downloaded', true ) ) {
 			return;
 		}
 
-		if ( get_transient( 'abc_remote_media_sync_lock_' . $attachment_id ) ) {
+		if ( get_transient( 'bromate_remote_media_bridge_lock_' . $attachment_id ) ) {
 			return;
 		}
 
@@ -764,13 +764,13 @@ class RemoteMediaSync {
 
 		self::$download_attempted = true;
 
-		set_transient( 'abc_remote_media_sync_lock_' . $attachment_id, 1, 10 * MINUTE_IN_SECONDS );
+		set_transient( 'bromate_remote_media_bridge_lock_' . $attachment_id, 1, 10 * MINUTE_IN_SECONDS );
 
 		$local_file = get_attached_file( $attachment_id );
 
 		if ( $local_file && file_exists( $local_file ) ) {
-			update_post_meta( $attachment_id, '_abc_remote_media_sync_downloaded', current_time( 'mysql' ) );
-			delete_transient( 'abc_remote_media_sync_lock_' . $attachment_id );
+			update_post_meta( $attachment_id, '_bromate_remote_media_bridge_downloaded', current_time( 'mysql' ) );
+			delete_transient( 'bromate_remote_media_bridge_lock_' . $attachment_id );
 			return;
 		}
 
@@ -788,7 +788,7 @@ class RemoteMediaSync {
 		$local_file = get_attached_file( $attachment_id );
 
 		if ( empty( $local_file ) ) {
-			delete_transient( 'abc_remote_media_sync_lock_' . $attachment_id );
+			delete_transient( 'bromate_remote_media_bridge_lock_' . $attachment_id );
 			return false;
 		}
 
@@ -809,38 +809,38 @@ class RemoteMediaSync {
 
 		if ( is_wp_error( $response ) ) {
 			self::log( 'download failed: ' . $response->get_error_message() );
-			delete_transient( 'abc_remote_media_sync_lock_' . $attachment_id );
+			delete_transient( 'bromate_remote_media_bridge_lock_' . $attachment_id );
 			return false;
 		}
 
 		$code = wp_remote_retrieve_response_code( $response );
 
 		if ( 429 === $code ) {
-			set_transient( 'abc_remote_media_sync_global_cooldown', 1, 10 * MINUTE_IN_SECONDS );
+			set_transient( 'bromate_remote_media_bridge_global_cooldown', 1, 10 * MINUTE_IN_SECONDS );
 			self::log( 'download paused after HTTP 429: ' . $remote_url );
-			delete_transient( 'abc_remote_media_sync_lock_' . $attachment_id );
+			delete_transient( 'bromate_remote_media_bridge_lock_' . $attachment_id );
 			return false;
 		}
 
 		if ( 200 !== $code ) {
 			self::log( 'download failed HTTP ' . $code . ': ' . $remote_url );
-			delete_transient( 'abc_remote_media_sync_lock_' . $attachment_id );
+			delete_transient( 'bromate_remote_media_bridge_lock_' . $attachment_id );
 			return false;
 		}
 
 		$body = wp_remote_retrieve_body( $response );
 
 		if ( empty( $body ) ) {
-			delete_transient( 'abc_remote_media_sync_lock_' . $attachment_id );
+			delete_transient( 'bromate_remote_media_bridge_lock_' . $attachment_id );
 			return false;
 		}
 
 		self::write_file( $local_file, $body );
 
-		update_post_meta( $attachment_id, '_abc_remote_media_sync_downloaded', current_time( 'mysql' ) );
-		update_post_meta( $attachment_id, '_remote_media_sync_source_url', esc_url_raw( $remote_url ) );
+		update_post_meta( $attachment_id, '_bromate_remote_media_bridge_downloaded', current_time( 'mysql' ) );
+		update_post_meta( $attachment_id, '_remote_media_bridge_source_url', esc_url_raw( $remote_url ) );
 
-		delete_transient( 'abc_remote_media_sync_lock_' . $attachment_id );
+		delete_transient( 'bromate_remote_media_bridge_lock_' . $attachment_id );
 
 		return true;
 	}

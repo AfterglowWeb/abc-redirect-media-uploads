@@ -1,6 +1,6 @@
 {
-  "name": "abc/remote-media-sync",
-  "description": "ABC Remote Media Sync",
+  "name": "bromate/remote-media-bridge",
+  "description": "Bromate Remote Media Bridge",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "authors": [
@@ -37,7 +37,7 @@
       "lint:file": "phpcs --standard=WordPress --extensions=php",
       "fix": "phpcbf --standard=WordPress --extensions=php ./",
       "fix:file": "phpcbf --standard=WordPress --extensions=php",
-      "zip": "rm -f abc-remote-media-sync.zip && zip -r abc-remote-media-sync.zip . -x '*.git*' -x 'vendor/*' -x 'composer.json' -x 'composer.lock' -x '*.md'"
+      "zip": "rm -f bromate-remote-media-bridge.zip && zip -r bromate-remote-media-bridge.zip . -x '*.git*' -x 'vendor/*' -x 'composer.json' -x 'composer.lock' -x '*.md'"
   }
   
 }

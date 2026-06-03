@@ -1,6 +1,6 @@
-=== ABC Remote Media Sync ===
+=== Bromate Remote Media Bridge ===
 Contributors: bromate
-Tags: media, uploads, attachments, staging, development, migration, sync
+Tags: media, attachments, staging, development, sync
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
@@ -8,13 +8,11 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A remote media bridge for WordPress development, staging and migration workflows.
-
 Use a remote WordPress uploads directory without copying your entire media library. Optionally cache media files locally as visitors browse your site.
 
 == Description ==
 
-ABC Remote Media Sync helps WordPress installations share the same database across multiple environments without requiring a full copy of the uploads directory.
+Bromate Remote Media Bridge helps WordPress installations share the same database across multiple environments without requiring a full copy of the uploads directory.
 
 Instead of synchronizing gigabytes of media files between environments, the plugin allows WordPress to use a remote uploads directory while keeping the local media library structure intact.
 
@@ -40,7 +38,7 @@ A local site generates:
 
 `https://local.example.test/wp-content/uploads/2026/05/image.jpg`
 
-ABC Remote Media Sync rewrites it to:
+Bromate Remote Media Bridge rewrites it to:
 
 `https://production.example.com/wp-content/uploads/2026/05/image.jpg`
 
@@ -81,13 +79,13 @@ Example:
 
 You may also configure the plugin using constants in wp-config.php:
 
-`define( 'ABC_REMOTE_MEDIA_SYNC_ENABLED', true );`
+`define( 'BROMATE_REMOTE_MEDIA_BRIDGE_ENABLED', true );`
 
-`define( 'ABC_REMOTE_MEDIA_SYNC_BASE_URL', 'https://www.example.com/wp-content/uploads' );`
+`define( 'BROMATE_REMOTE_MEDIA_BRIDGE_BASE_URL', 'https://www.example.com/wp-content/uploads' );`
 
-`define( 'ABC_REMOTE_MEDIA_SYNC_DOWNLOAD_WHILE_NAVIGATING', true );`
+`define( 'BROMATE_REMOTE_MEDIA_BRIDGE_DOWNLOAD_WHILE_NAVIGATING', true );`
 
-`define( 'ABC_REMOTE_MEDIA_SYNC_DEBUG', false );`
+`define( 'BROMATE_REMOTE_MEDIA_BRIDGE_DEBUG', false );`
 
 Constants take precedence over saved settings.
 

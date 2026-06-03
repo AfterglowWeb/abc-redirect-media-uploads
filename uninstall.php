@@ -1,13 +1,13 @@
 <?php
 /**
- * Uninstall ABC Remote Media Sync plugin.
+ * Uninstall Bromate Remote Media Bridge plugin.
  *
- * @package RemoteMediaSync
+ * @package RemoteMediaBridge
  */
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
-delete_option( 'abc_remote_media_sync_base_url' );
-delete_option( 'abc_remote_media_sync_enabled' );
-delete_option( 'abc_remote_media_sync_download_while_navigating' );
-delete_option( 'abc_remote_media_sync_debug' );
+delete_option( 'bromate_remote_media_bridge_base_url' );
+delete_option( 'bromate_remote_media_bridge_enabled' );
+delete_option( 'bromate_remote_media_bridge_download_while_navigating' );
+delete_option( 'bromate_remote_media_bridge_debug' );
