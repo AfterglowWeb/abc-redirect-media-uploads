@@ -2,122 +2,122 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: ABC Remote Media Sync 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/abc-remote-media-sync\n"
+"Project-Id-Version: Bromate Remote Media Bridge 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bromate-remote-media-bridge\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-02T13:06:43+00:00\n"
+"POT-Creation-Date: 2026-06-03T07:49:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
-"X-Domain: abc-remote-media-sync\n"
+"X-Domain: bromate-remote-media-bridge\n"
 
 #. Plugin Name of the plugin
-#: abc-remote-media-sync.php
-#: inc/class-remotemediasync.php:140
-#: inc/class-remotemediasync.php:141
-#: inc/class-remotemediasync.php:159
-msgid "ABC Remote Media Sync"
+#: bromate-remote-media-bridge.php
+#: inc/class-remotemediabridge.php:140
+#: inc/class-remotemediabridge.php:141
+#: inc/class-remotemediabridge.php:159
+msgid "Bromate Remote Media Bridge"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: abc-remote-media-sync.php
-msgid "https://wordpress.org/plugins/abc-remote-media-sync/"
+#: bromate-remote-media-bridge.php
+msgid "https://wordpress.org/plugins/bromate-remote-media-bridge/"
 msgstr ""
 
 #. Description of the plugin
-#: abc-remote-media-sync.php
+#: bromate-remote-media-bridge.php
 msgid "Use a remote WordPress uploads directory without copying your entire media library."
 msgstr ""
 
 #. Author of the plugin
-#: abc-remote-media-sync.php
+#: bromate-remote-media-bridge.php
 msgid "bromate"
 msgstr ""
 
 #. Author URI of the plugin
-#: abc-remote-media-sync.php
+#: bromate-remote-media-bridge.php
 msgid "https://www.moriskelly.com"
 msgstr ""
 
-#: inc/class-remotemediasync.php:162
+#: inc/class-remotemediabridge.php:162
 msgid "Redirect or rewrite public media URLs to another WordPress uploads base URL. This is useful when several environments share the same database but do not share the same uploads directory."
 msgstr ""
 
-#: inc/class-remotemediasync.php:170
+#: inc/class-remotemediabridge.php:170
 msgid "Enable media URL redirect"
 msgstr ""
 
-#: inc/class-remotemediasync.php:179
+#: inc/class-remotemediabridge.php:179
 msgid "Enable rewriting and redirection of media URLs."
 msgstr ""
 
-#: inc/class-remotemediasync.php:185
+#: inc/class-remotemediabridge.php:185
 msgid "Download while navigating"
 msgstr ""
 
-#: inc/class-remotemediasync.php:194
+#: inc/class-remotemediabridge.php:194
 msgid "Progressively download remote media locally when visitors browse pages using those images."
 msgstr ""
 
-#: inc/class-remotemediasync.php:197
+#: inc/class-remotemediabridge.php:197
 msgid "This uses normal navigation to progressively warm the local uploads folder. It may not work if the source site blocks remote downloads, hotlinking, server-to-server requests, or applies strict rate limiting."
 msgstr ""
 
-#: inc/class-remotemediasync.php:205
+#: inc/class-remotemediabridge.php:205
 msgid "Remote uploads base URL"
 msgstr ""
 
-#: inc/class-remotemediasync.php:218
+#: inc/class-remotemediabridge.php:218
 msgid "Example: https://production.example.com/wp-content/uploads"
 msgstr ""
 
-#: inc/class-remotemediasync.php:226
+#: inc/class-remotemediabridge.php:226
 msgid "Excluded URLs"
 msgstr ""
 
-#: inc/class-remotemediasync.php:239
+#: inc/class-remotemediabridge.php:239
 msgid "One absolute URL per line. URLs must belong to the current domain."
 msgstr ""
 
-#: inc/class-remotemediasync.php:245
+#: inc/class-remotemediabridge.php:245
 msgid "Debug logs"
 msgstr ""
 
-#: inc/class-remotemediasync.php:254
+#: inc/class-remotemediabridge.php:254
 msgid "Write plugin debug messages to the PHP error log."
 msgstr ""
 
-#: inc/class-remotemediasync.php:264
+#: inc/class-remotemediabridge.php:264
 msgid "Environment constants"
 msgstr ""
 
-#: inc/class-remotemediasync.php:265
+#: inc/class-remotemediabridge.php:265
 msgid "You can also define these constants in wp-config.php to override the saved options:"
 msgstr ""
 
-#: inc/class-remotemediasync.php:274
-msgid "ABC Remote Media Sync is open source, "
+#: inc/class-remotemediabridge.php:274
+msgid "Bromate Remote Media Bridge is open source, "
 msgstr ""
 
-#: inc/class-remotemediasync.php:278
+#: inc/class-remotemediabridge.php:278
 msgid "see plugin Github"
 msgstr ""
 
-#: inc/class-remotemediasync.php:279
+#: inc/class-remotemediabridge.php:279
 msgid "You can thank me through PayPal or Monero:"
 msgstr ""
 
-#: inc/class-remotemediasync.php:285
+#: inc/class-remotemediabridge.php:285
 msgid "PayPal Donate Link"
 msgstr ""
 
-#: inc/class-remotemediasync.php:287
+#: inc/class-remotemediabridge.php:287
 msgid "Monero Address"
 msgstr ""
 
-#: inc/class-remotemediasync.php:304
+#: inc/class-remotemediabridge.php:304
 msgid "Settings"
 msgstr ""
