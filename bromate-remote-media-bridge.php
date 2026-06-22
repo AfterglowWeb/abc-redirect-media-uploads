@@ -3,7 +3,7 @@
  * Plugin Name: Bromate Remote Media Bridge
  * Plugin URI: https://wordpress.org/plugins/bromate-remote-media-bridge/
  * Description: Use a remote WordPress uploads directory without copying your entire media library.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Requires at least: 6.0
  * Tested up to: 7.0 
  * Requires PHP: 7.4

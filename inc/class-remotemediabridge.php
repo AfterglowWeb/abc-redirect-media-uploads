@@ -159,7 +159,7 @@ class RemoteMediaBridge {
 			<h1><?php esc_html_e( 'Bromate Remote Media Bridge', 'bromate-remote-media-bridge' ); ?></h1>
 
 			<p>
-				<?php esc_html_e( 'Redirect or rewrite public media URLs to another WordPress uploads base URL. This is useful when several environments share the same database but do not share the same uploads directory.', 'bromate-remote-media-bridge' ); ?>
+				<?php esc_html_e( 'Rewrite media URLs to another WordPress site uploads URL. Use it when several environments share the same database but you do not want to copy the uploads directory.', 'bromate-remote-media-bridge' ); ?>
 			</p>
 
 			<form method="post" action="options.php">
@@ -278,7 +278,7 @@ class RemoteMediaBridge {
 				rel="noopener noreferrer"><?php esc_html_e( 'see plugin Github', 'bromate-remote-media-bridge' ); ?></a><br>
 				<?php esc_html_e( 'You can thank me through PayPal or Monero:', 'bromate-remote-media-bridge' ); ?>
 				<br>
-				<a href="https://www.paypal.com/donate/?business=HDV38XURDEFEA&no_recurring=0&item_name=Remote+Media+Sync+is+free+and+open+source.%0AIf+the+plugin+saves+you+time%2C+consider+supporting+its+development.&currency_code=EUR"
+				<a href="https://www.paypal.com/donate/?business=HDV38XURDEFEA&no_recurring=0&item_name=Bromate+Remote+Media+Bridge+is+free+and+open+source.%0AIf+the+plugin+saves+you+time%2C+consider+supporting+its+development.&currency_code=EUR"
 					target="_blank"
 					style="text-decoration: underline;"
 					rel="noopener noreferrer">
@@ -300,7 +300,7 @@ class RemoteMediaBridge {
 	public static function add_plugin_action_links( array $links ): array {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
-			esc_url( admin_url( 'options-general.php?page=remote-media-bridge' ) ),
+			esc_url( admin_url( 'options-general.php?page=bromate-remote-media-bridge' ) ),
 			esc_html__( 'Settings', 'bromate-remote-media-bridge' )
 		);
 
